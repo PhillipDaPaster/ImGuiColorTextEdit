@@ -1118,39 +1118,35 @@ void TextEditor::Render()
 	}
 }
 
-void TextEditor::Render(const char* aTitle, const ImVec2& aSize, bool aBorder)
-{
-	mWithinRender = true;
-	mTextChanged = false;
-	mCursorPositionChanged = false;
+void TextEditor::Render(const char* aTitle, const ImVec2& aSize, bool aBorder) {
+    mWithinRender = true;
+    mTextChanged = false;
+    mCursorPositionChanged = false;
 
-	ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::ColorConvertU32ToFloat4(mPalette[(int)PaletteIndex::Background]));
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
-	if (!mIgnoreImGuiChild)
-		ImGui::BeginChild(aTitle, aSize, aBorder, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar | ImGuiWindowFlags_NoMove);
+    ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::ColorConvertU32ToFloat4(mPalette[(int)PaletteIndex::Background]));
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
 
-	if (mHandleKeyboardInputs)
-	{
-		HandleKeyboardInputs();
-		ImGui::PushAllowKeyboardFocus(true);
-	}
+    if (!mIgnoreImGuiChild)
+        ImGui::BeginChild(aTitle, aSize, aBorder, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar | ImGuiWindowFlags_NoMove);
 
-	if (mHandleMouseInputs)
-		HandleMouseInputs();
+    if (mHandleKeyboardInputs) // imgui removed PushAllowKeyboardFocus in newer versions 
+        HandleKeyboardInputs(); 
 
-	ColorizeInternal();
-	Render();
+    if (mHandleMouseInputs)
+        HandleMouseInputs();
 
-	if (mHandleKeyboardInputs)
-		ImGui::PopAllowKeyboardFocus();
+    ColorizeInternal();
+    Render();
 
-	if (!mIgnoreImGuiChild)
-		ImGui::EndChild();
+	// they also removed PopAllowKeyboardFocus 
 
-	ImGui::PopStyleVar();
-	ImGui::PopStyleColor();
+    if (!mIgnoreImGuiChild)
+        ImGui::EndChild();
 
-	mWithinRender = false;
+    ImGui::PopStyleVar();
+    ImGui::PopStyleColor();
+
+    mWithinRender = false;
 }
 
 void TextEditor::SetText(const std::string & aText)
